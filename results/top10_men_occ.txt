@@ -1,0 +1,1 @@
+[{'name': 'דוד', 'appearances': 1075}, {'name': 'יהודה', 'appearances': 819}, {'name': 'משה', 'appearances': 766}, {'name': 'שאול', 'appearances': 406}, {'name': 'יעקב', 'appearances': 349}, {'name': 'אהרן', 'appearances': 347}, {'name': 'שלמה', 'appearances': 294}, {'name': 'יהושע', 'appearances': 218}, {'name': 'יוסף', 'appearances': 213}, {'name': 'אפרים', 'appearances': 180}]

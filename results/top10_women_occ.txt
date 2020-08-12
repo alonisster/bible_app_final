@@ -1,0 +1,1 @@
+[{'name': 'אסתר', 'appearances': 55}, {'name': 'רחל', 'appearances': 47}, {'name': 'שרה', 'appearances': 38}, {'name': 'לאה', 'appearances': 34}, {'name': 'רבקה', 'appearances': 30}, {'name': 'תמר', 'appearances': 24}, {'name': 'מעכה', 'appearances': 23}, {'name': 'איזבל', 'appearances': 22}, {'name': 'נעמי', 'appearances': 21}, {'name': 'תרצה', 'appearances': 18}]

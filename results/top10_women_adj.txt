@@ -1,0 +1,1 @@
+[{'adjective': 'קטן', 'occurrences': 4}, {'adjective': 'יפה', 'occurrences': 2}, {'adjective': 'טוב', 'occurrences': 2}, {'adjective': 'גדול', 'occurrences': 2}, {'adjective': 'נאוה', 'occurrences': 1}, {'adjective': 'עקר', 'occurrences': 1}]
