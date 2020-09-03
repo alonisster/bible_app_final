@@ -49,7 +49,7 @@ def verse_get_str(verse):
     return " ".join(words)
 
 
-def verse_get_adjective(verse, name_word, female=True, distance=2):
+def verse_get_adjective(verse, name_word, female, book, num_chapter, num_verse, distance=1):
     ADJECTIVE_CONSTANT = 'ADJECTIVE'
     if female:
         GENDER_CONSTANT = 'FEMININE'
@@ -58,8 +58,10 @@ def verse_get_adjective(verse, name_word, female=True, distance=2):
     SINGULAR_CONSTANT = 'SINGULAR'
     # example: "#BASEFORM_POS_ADJECTIVE #BASEFORM_GENDER_FEMININE #BASEFORM_NUMBER_SINGULAR #BASEFORM_STATUS_ABSOLUTE"
     bad_adjectives = ['אמרי', 'פלשתי', 'חתי', 'חי', 'יזרעאלי', 'מואבי', 'שונמי', 'עמוני', 'כרמלי', 'ראשון', 'שני',
-                      'רביעי', 'שלישי', 'ארמי', 'כרתי', 'ארכי', 'מצרי']
-
+                      'רביעי', 'שלישי', 'ארמי', 'כרתי', 'ארכי', 'מצרי', 'תימני', 'שילני', 'פלתי', 'כשי', 'תשבי',
+                      'גלעדי', 'לוי']
+    bad_adjectives.clear()
+    bad_adjectives = ['חי']
     name_index = -1
     word_list = []
     cur_index = 0
@@ -70,7 +72,7 @@ def verse_get_adjective(verse, name_word, female=True, distance=2):
         cur_index += 1
 
     if name_index == -1:
-        print("verse_get_adjective error")
+        print("verse_get_adjective error") # should never get here
         exit(1)
 
     for i in range(distance*2+1):
@@ -85,11 +87,16 @@ def verse_get_adjective(verse, name_word, female=True, distance=2):
                 if ana and ADJECTIVE_CONSTANT in ana and GENDER_CONSTANT in ana and SINGULAR_CONSTANT in ana:
                     adj = remove_vowels(str(word.attrib['lemma']))
                     if adj not in bad_adjectives:
-                        if female:
-                            print("name = " + name_word.text + " , " + "adj = " + adj)
-                            for word in word_list:
-                                print(word.text, end=" ")
-                            print("")
+                        if not female and adj == "גדי":
+                            s = "דמות: " + remove_vowels(str(name_word.attrib['lemma'])) + ", "
+                            s += "ספר " + "'" + book + "'" + ", " + "פרק " + num_chapter + ", " + "פסוק " + num_verse
+                            print(s)
+                            verse_str = ""
+                            for w in word_list:
+                                if w.attrib:
+                                    verse_str += w.text + " "
+                            print('    ' + "”" + verse_str.strip() + "“")
+                        #    print(remove_vowels(str(name_word.attrib['lemma'])) + ". " + adj + ". ", end="")
                         return adj
 
     return None
@@ -100,7 +107,7 @@ def get_occurrences(book_path, women_list, men_list):
     book_name_heb = gematria.BOOKS[book_name]
     global total_women_occ, total_men_occ
 
-    books_occ[book_name_heb] = {"women_appearances":0, "men_appearances":0, "men_figures":[], "women_figures":[]}
+    books_occ[book_name_heb] = {"women_appearances":0, "men_appearances":0}
 
     tree = et.parse(book_path)
     root = tree.getroot()
@@ -123,7 +130,8 @@ def get_occurrences(book_path, women_list, men_list):
                             women_occ[name][APPEARANCES].append(new_app)
                             books_occ[book_name_heb]["women_appearances"] += 1
 
-                            adj = verse_get_adjective(verse, word)
+                            adj = verse_get_adjective(verse, word, True, book_name_heb,
+                                                      gematria.idx_to_gem(num_chapter), gematria.idx_to_gem(num_verse))
                             if adj:
                                 adj_map = {}
                                 for woman_adj in women_occ[name][ADJECTIVES]:
@@ -145,7 +153,8 @@ def get_occurrences(book_path, women_list, men_list):
                             men_occ[name][APPEARANCES].append(new_app)
                             books_occ[book_name_heb]["men_appearances"] += 1
 
-                            adj = verse_get_adjective(verse, word, False)
+                            adj = verse_get_adjective(verse, word, False, book_name_heb,
+                                                      gematria.idx_to_gem(num_chapter), gematria.idx_to_gem(num_verse))
                             if adj:
                                 adj_map = {}
                                 for man_adj in men_occ[name][ADJECTIVES]:
@@ -216,7 +225,10 @@ top10_women_occ = get_top_occurences(women_occ, 10)
 top10_men_occ = get_top_occurences(men_occ, 10)
 
 top10_women_adj = get_top_adjectives(women_occ, 20)
-top10_men_adj = get_top_adjectives(men_occ, 10)
+top10_men_adj = get_top_adjectives(men_occ, 20)
+
+# printing outputs...
+# other outputs are retrieved using (very) short scripts
 
 print("writing results\\women_occ.txt ...")
 with open('results\\women_occ.txt', 'w', encoding='utf-8') as f:
